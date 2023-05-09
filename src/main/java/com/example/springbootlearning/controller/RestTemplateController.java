@@ -22,7 +22,8 @@ public class RestTemplateController {
     @Autowired
     private RestTemplate restTemplate;
 
-    private String all_posts_url = "http://jsonplaceholder.typicode.com/posts/1";
+    private static final String ONE_POST_URL = "http://jsonplaceholder.typicode.com/posts/1";
+    private static final String ALL_POST_URL = "http://jsonplaceholder.typicode.com/posts";
 
     @ApiOperation(value = "welcome Api")
     @GetMapping("/welcome")
@@ -33,30 +34,33 @@ public class RestTemplateController {
     @ApiOperation(value = "to get All posts from http://jsonplaceholder.typicode.com/posts")
     @GetMapping("/all_posts")
     public ResponseEntity<List<Post>> getAllPosts() {
-        var result = restTemplate.getForObject("http://jsonplaceholder.typicode.com/posts", List.class);
+        var result = restTemplate.getForObject(ALL_POST_URL, List.class);
         return new ResponseEntity<List<Post>>((List<Post>) result, HttpStatus.OK);
     }
 
     @ApiOperation(value = "to get one post from http://jsonplaceholder.typicode.com/posts/1")
     @GetMapping("/post/1")
     public ResponseEntity<String> getOnePost() {
-        var result = restTemplate.getForObject("http://jsonplaceholder.typicode.com/posts/1", Post.class);
-        return new ResponseEntity<String>(result.getBody(), HttpStatus.OK);
+        var result = restTemplate.getForObject(ONE_POST_URL, Post.class);
+        if (result != null) {
+            return new ResponseEntity<String>(result.getBody(), HttpStatus.OK);
+        }
+        return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
     }
 
 
     @ApiOperation(value = "to get one post from http://jsonplaceholder.typicode.com/posts/1")
     @GetMapping("/postEntity/1")
     public ResponseEntity<Post> getForEntity() {
-        var result = restTemplate.getForEntity("http://jsonplaceholder.typicode.com/posts/1", Post.class);
+        var result = restTemplate.getForEntity(ONE_POST_URL, Post.class);
         return new ResponseEntity<Post>(result.getBody(), HttpStatus.OK);
     }
 
     @ApiOperation(value = "to get one post from http://jsonplaceholder.typicode.com/posts/1")
     @GetMapping("/postExchange/1")
     public ResponseEntity<Post> exchangeRestTemplate() throws URISyntaxException {
-        RequestEntity requestEntity = new RequestEntity(HttpMethod.GET,new URI(all_posts_url));
-        var result = restTemplate.exchange(requestEntity,Post.class);
+        RequestEntity<Post> requestEntity = new RequestEntity<>(HttpMethod.GET, new URI(ONE_POST_URL));
+        var result = restTemplate.exchange(requestEntity, Post.class);
         return new ResponseEntity<Post>(result.getBody(), HttpStatus.OK);
     }
 
