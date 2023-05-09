@@ -3,6 +3,7 @@ package com.example.springbootlearning.controller;
 import com.example.springbootlearning.model.Post;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -21,9 +22,9 @@ import java.util.List;
 public class RestTemplateController {
     @Autowired
     private RestTemplate restTemplate;
-
-    private static final String ONE_POST_URL = "http://jsonplaceholder.typicode.com/posts/1";
     private static final String ALL_POST_URL = "http://jsonplaceholder.typicode.com/posts";
+    @Value("${url.jsonplaceholder.one.post}")
+    private String onePostUrl;
 
     @ApiOperation(value = "welcome Api")
     @GetMapping("/welcome")
@@ -41,7 +42,7 @@ public class RestTemplateController {
     @ApiOperation(value = "to get one post from http://jsonplaceholder.typicode.com/posts/1")
     @GetMapping("/post/1")
     public ResponseEntity<String> getOnePost() {
-        var result = restTemplate.getForObject(ONE_POST_URL, Post.class);
+        var result = restTemplate.getForObject(onePostUrl, Post.class);
         if (result != null) {
             return new ResponseEntity<String>(result.getBody(), HttpStatus.OK);
         }
@@ -52,14 +53,14 @@ public class RestTemplateController {
     @ApiOperation(value = "to get one post from http://jsonplaceholder.typicode.com/posts/1")
     @GetMapping("/postEntity/1")
     public ResponseEntity<Post> getForEntity() {
-        var result = restTemplate.getForEntity(ONE_POST_URL, Post.class);
-        return new ResponseEntity<Post>(result.getBody(), HttpStatus.OK);
+        var result = restTemplate.getForEntity(onePostUrl, Post.class);
+        return new ResponseEntity<>(result.getBody(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "to get one post from http://jsonplaceholder.typicode.com/posts/1")
+    @ApiOperation(value = "using exchange - get one post from http://jsonplaceholder.typicode.com/posts/1")
     @GetMapping("/postExchange/1")
     public ResponseEntity<Post> exchangeRestTemplate() throws URISyntaxException {
-        RequestEntity<Post> requestEntity = new RequestEntity<>(HttpMethod.GET, new URI(ONE_POST_URL));
+        RequestEntity<Post> requestEntity = new RequestEntity<>(HttpMethod.GET, new URI(onePostUrl));
         var result = restTemplate.exchange(requestEntity, Post.class);
         return new ResponseEntity<Post>(result.getBody(), HttpStatus.OK);
     }
