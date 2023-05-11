@@ -1,6 +1,7 @@
 package com.example.springbootlearning.controller;
 
 import com.example.springbootlearning.model.Post;
+import com.example.springbootlearning.model.SubscriptionModel;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,9 @@ public class RestTemplateController {
     private static final String ALL_POST_URL = "http://jsonplaceholder.typicode.com/posts";
     @Value("${url.jsonplaceholder.one.post}")
     private String onePostUrl;
+    @Value("${local.post.api}")
+    private String localPostApi;
+
 
     @ApiOperation(value = "welcome Api")
     @GetMapping("/welcome")
@@ -57,6 +61,14 @@ public class RestTemplateController {
         return new ResponseEntity<>(result.getBody(), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "postForEntity - local post API - Call")
+    @GetMapping("/postForEntityLocalAPI")
+    public ResponseEntity<SubscriptionModel> postForEntityLocalAPI() throws URISyntaxException {
+        RequestEntity<SubscriptionModel> requestEntity = new RequestEntity<>(HttpMethod.POST, new URI(localPostApi));
+        var result = restTemplate.postForEntity( localPostApi , "",SubscriptionModel.class);
+        return new ResponseEntity<SubscriptionModel>(result.getBody(), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "using exchange - get one post from http://jsonplaceholder.typicode.com/posts/1")
     @GetMapping("/postExchange/1")
     public ResponseEntity<Post> exchangeRestTemplate() throws URISyntaxException {
@@ -65,4 +77,12 @@ public class RestTemplateController {
         return new ResponseEntity<Post>(result.getBody(), HttpStatus.OK);
     }
 
+
+    @ApiOperation(value = "exchange - local post API - Call")
+    @GetMapping("/localPostApiCall")
+    public ResponseEntity<SubscriptionModel> localPostApiCall() throws URISyntaxException {
+        RequestEntity<SubscriptionModel> requestEntity = new RequestEntity<>(HttpMethod.POST, new URI(localPostApi));
+        var result = restTemplate.exchange(requestEntity, SubscriptionModel.class);
+        return new ResponseEntity<SubscriptionModel>(result.getBody(), HttpStatus.OK);
+    }
 }
