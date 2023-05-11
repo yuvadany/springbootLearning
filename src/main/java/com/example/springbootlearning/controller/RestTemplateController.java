@@ -1,5 +1,6 @@
 package com.example.springbootlearning.controller;
 
+import com.example.springbootlearning.model.Book;
 import com.example.springbootlearning.model.Post;
 import com.example.springbootlearning.model.SubscriptionModel;
 import io.swagger.annotations.ApiOperation;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -28,6 +30,9 @@ public class RestTemplateController {
     private String onePostUrl;
     @Value("${local.post.api}")
     private String localPostApi;
+    @Value("${local.get.with.requestparam.api}")
+    private String localgetWithRequest;
+
 
 
     @ApiOperation(value = "welcome Api")
@@ -58,6 +63,13 @@ public class RestTemplateController {
     @GetMapping("/postEntity/1")
     public ResponseEntity<Post> getForEntity() {
         var result = restTemplate.getForEntity(onePostUrl, Post.class);
+        return new ResponseEntity<>(result.getBody(), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = " Api To call - local GET api which has Query String")
+    @GetMapping("/getForEntityWithRequestParam/{book_id}/{author_name}")
+    public ResponseEntity<Book> getForEntityWithRequestParam(@PathVariable int book_id, @PathVariable String author_name) {
+        var result = restTemplate.getForEntity(localgetWithRequest, Book.class,book_id,author_name);
         return new ResponseEntity<>(result.getBody(), HttpStatus.OK);
     }
 
