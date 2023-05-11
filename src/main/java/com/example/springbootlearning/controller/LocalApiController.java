@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/yuvi/services")
-public class SampleApiController {
+public class LocalApiController {
     @Autowired
     private SubscriptionModel subscriptionModel;
     @Autowired
@@ -64,11 +64,11 @@ public class SampleApiController {
     }
 
     @ApiOperation(" Json Response with Path Variable - Local GET API")
-    @GetMapping(value= "/apis/jsonResponse/{book_id}",produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Book> getJsonResponse(@PathVariable int book_id) {
+    @GetMapping(value= "/apis/jsonResponse/{book_id}/author/{author_name}",produces= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Book> getJsonResponse(@PathVariable int book_id,@PathVariable String author_name) {
         book.setBook_id(book_id);
         book.setBook_name("Spring Boot 2+");
-        book.setAuthor("Spring Boot - Author");
+        book.setAuthor(author_name);
         ResponseEntity<Book> response = new ResponseEntity<>(book, HttpStatus.OK);
         return response;
     }

@@ -28,7 +28,7 @@ public class SwaggerConfig {
 
     public ApiInfo getApiInfos(){
         return new ApiInfoBuilder()
-                .title("... Spring Boot Sample Project For RestTemplate .... ")
+                .title("... Spring Boot Project For RestTemplate and Webclient ... ")
                 .description("It has all Spring boot important components with example")
                 .version("1")
                 .build();
