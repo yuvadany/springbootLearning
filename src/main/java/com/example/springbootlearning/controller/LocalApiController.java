@@ -40,7 +40,7 @@ public class LocalApiController {
     }
 
     @ApiOperation("local Get API for XML Response with Request Param - Query String")
-    @GetMapping(value= "/apis/xmlResponse",produces= MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value= "/apis/get/xmlResponse",produces= MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<Book> getXmlResponse(@RequestParam String author_name) {
         book.setBook_id(1);
         book.setBook_name("Java 8 Advanced");
@@ -50,7 +50,7 @@ public class LocalApiController {
     }
 
     @ApiOperation("local POST API - with Request Body - XML Response")
-    @PostMapping(value= "/apis/xmlResponse",produces= MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value= "/apis/post/xmlResponse",produces= MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<Book> requestBodyXmlResponse(@RequestBody Book book_input) {
         ResponseEntity<Book> response = new ResponseEntity<>(book_input, HttpStatus.OK);
         return response;

@@ -6,10 +6,7 @@ import com.example.springbootlearning.model.SubscriptionModel;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +29,8 @@ public class RestTemplateController {
     private String localPostApi;
     @Value("${local.get.with.requestparam.api}")
     private String localgetWithRequest;
+    @Value("${local.get.api.xml.response}")
+    private String localGetXml;
 
 
 
@@ -73,13 +72,6 @@ public class RestTemplateController {
         return new ResponseEntity<>(result.getBody(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "postForEntity - local post API - Call")
-    @GetMapping("/postForEntityLocalAPI")
-    public ResponseEntity<SubscriptionModel> postForEntityLocalAPI() throws URISyntaxException {
-        RequestEntity<SubscriptionModel> requestEntity = new RequestEntity<>(HttpMethod.POST, new URI(localPostApi));
-        var result = restTemplate.postForEntity( localPostApi , "",SubscriptionModel.class);
-        return new ResponseEntity<SubscriptionModel>(result.getBody(), HttpStatus.OK);
-    }
 
     @ApiOperation(value = "using exchange - get one post from http://jsonplaceholder.typicode.com/posts/1")
     @GetMapping("/postExchange/1")
@@ -89,12 +81,30 @@ public class RestTemplateController {
         return new ResponseEntity<Post>(result.getBody(), HttpStatus.OK);
     }
 
-
+//http://localhost:8989/yuvi/services/apis/postSubscriptionApi
     @ApiOperation(value = "exchange - local post API - Call")
     @GetMapping("/localPostApiCall")
     public ResponseEntity<SubscriptionModel> localPostApiCall() throws URISyntaxException {
         RequestEntity<SubscriptionModel> requestEntity = new RequestEntity<>(HttpMethod.POST, new URI(localPostApi));
         var result = restTemplate.exchange(requestEntity, SubscriptionModel.class);
         return new ResponseEntity<SubscriptionModel>(result.getBody(), HttpStatus.OK);
+    }
+
+    //http://localhost:8989/yuvi/services/apis/postSubscriptionApi
+    @ApiOperation(value = "postForEntity - local post API - Call")
+    @GetMapping("/postForEntityLocalAPI")
+    public ResponseEntity<SubscriptionModel> postForEntityLocalAPI() throws URISyntaxException {
+        RequestEntity<SubscriptionModel> requestEntity = new RequestEntity<>(HttpMethod.POST, new URI(localPostApi));
+        var result = restTemplate.postForEntity( localPostApi , "",SubscriptionModel.class);
+        return new ResponseEntity<SubscriptionModel>(result.getBody(), HttpStatus.OK);
+    }
+
+    //http://localhost:8989/yuvi/services/apis/get/xmlResponse
+    @ApiOperation(value = "exchange - local post API - xml Response")
+    @GetMapping(value = "/localGetXMLapi",produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<Book> localGetXMLapi() throws URISyntaxException {
+        RequestEntity<SubscriptionModel> requestEntity = new RequestEntity<>(HttpMethod.GET, new URI(localGetXml+"?author_name=yuvaraj_palanisamy"));
+        var result = restTemplate.exchange(requestEntity, Book.class);
+        return new ResponseEntity<Book>(result.getBody(), HttpStatus.OK);
     }
 }
