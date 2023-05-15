@@ -7,10 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -22,6 +19,8 @@ import java.util.List;
 public class RestTemplateController {
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private Book book;
     private static final String ALL_POST_URL = "http://jsonplaceholder.typicode.com/posts";
     @Value("${url.jsonplaceholder.one.post}")
     private String onePostUrl;
@@ -31,8 +30,9 @@ public class RestTemplateController {
     private String localgetWithRequest;
     @Value("${local.get.api.xml.response}")
     private String localGetXml;
-
-
+    //http://localhost:8989/yuvi/services/apis/sampleRequestBody
+    @Value("${local.get.api.post.requestbody}")
+    private String localPostRequestBody;
 
     @ApiOperation(value = "welcome Api")
     @GetMapping("/welcome")
@@ -107,4 +107,16 @@ public class RestTemplateController {
         var result = restTemplate.exchange(requestEntity, Book.class);
         return new ResponseEntity<Book>(result.getBody(), HttpStatus.OK);
     }
+
+
+    @ApiOperation(value = "With Request Body - local post API - ")
+    @PostMapping(value = "/localPostRequestBody/{bookId}/{bookName}",produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<String> localPostRequestBody(@PathVariable int bookId,@PathVariable String bookName) throws URISyntaxException {
+        book.setBook_id(bookId);
+        book.setBook_name(bookName);
+        book.setAuthor("YUVARAJ PALANISAMY");
+        var result = restTemplate.postForEntity(new URI(localPostRequestBody), book, String.class);
+        return new ResponseEntity<String>(result.getBody(), HttpStatus.OK);
+    }
+
 }
